@@ -12,12 +12,16 @@ const LayoutAdmin = ({ children }) => {
         setIsSidebarOpen(prevState => !prevState);
     }, []);
 
+    const closeSidebar = useCallback(() => {
+        setIsSidebarOpen(false);
+    }, []);
+
     return (
         <>
             <Header role='admin' onToggleSidebar={toggleSidebar} />
             <div className="flex">
-                <Sidebar isOpen={isSidebarOpen} />
-                <div className="flex-1 mt-16"> {/* Asegúrate de tener un margen superior adecuado */}
+                <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+                <div className="flex-1 mt-16">
                     {children}
                 </div>
             </div>
