@@ -5,6 +5,10 @@ const page = () => {
     return (
         <>
             <p>holaaaaaaaaaaaa ADMIN</p>
+            <p>holaaaaaaaaaaaa ADMIN</p>
+            <p>holaaaaaaaaaaaa ADMIN</p>
+            <p>holaaaaaaaaaaaa ADMIN</p>
+            <p>holaaaaaaaaaaaa ADMIN</p>
 
         </>
     );
