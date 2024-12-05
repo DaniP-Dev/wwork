@@ -73,12 +73,12 @@ const EliminarEditar = ({ onProductChange }) => {
     };
 
     return (
-        <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 mt-16 sm:scale-100 scale-95 sm:max-w-md">
+        <div className="max-w-full w-full mx-auto bg-white shadow-lg rounded-lg p-6 mt-16 sm:scale-100 scale-95 sm:max-w-md">
             <h2 className="text-2xl font-bold mb-4">Eliminar o Editar Productos</h2>
             {editingProduct ? (
                 <div>
                     <h3 className="text-xl font-bold mb-4">Editar Producto</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); handleSave(editingProduct.id); }}>
+                    <form onSubmit={(e) => { e.preventDefault(); handleSave(editingProduct.id); }} className="space-y-4">
                         <div className="mb-4">
                             <label className="block text-gray-700 font-bold mb-2" htmlFor="nombre">
                                 Nombre del Producto
@@ -141,7 +141,7 @@ const EliminarEditar = ({ onProductChange }) => {
                             <select
                                 id="disponible"
                                 name="disponible"
-                                value={productData.disponible ? 'Disponible' : 'No Disponible'}  // Si es true, muestra 'Disponible'
+                                value={productData.disponible ? 'Disponible' : 'No Disponible'}
                                 onChange={handleInputChange}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                             >

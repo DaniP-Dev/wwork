@@ -1,10 +1,13 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
+import BotonComprar from './BotonComprar'; // Ajusta la ruta según tu estructura de carpetas
 
 const ProductCard = () => {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -24,11 +27,16 @@ const ProductCard = () => {
     }, []);
 
     const handleCardClick = (product) => {
-        if (selectedProduct && selectedProduct.id === product.id) {
-            setSelectedProduct(null);
-        } else {
-            setSelectedProduct(product);
-        }
+        setSelectedProduct(product);
+    };
+
+    const openModal = () => {
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedProduct(null);
     };
 
     // Filtrar los productos que tienen "disponible" como true
@@ -67,10 +75,29 @@ const ProductCard = () => {
                                     {product.stock_inicial > 0 ? 'Disponible' : 'No disponible'}
                                 </p>
                             </div>
+
+                            {/* Botón para abrir el modal */}
+                            <div className="mt-4">
+                                <button
+                                    onClick={openModal}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                >
+                                    Comprar
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
             ))}
+
+            {/* Modal de Comprar */}
+            {showModal && selectedProduct && (
+                <BotonComprar
+                    productoID={selectedProduct.id}
+                    precioUnitario={selectedProduct.precio}
+                    onClose={closeModal}
+                />
+            )}
         </div>
     );
 };

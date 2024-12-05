@@ -5,9 +5,18 @@ import { useRouter } from 'next/navigation';
 const Header = ({ role, onToggleSidebar }) => {
     const router = useRouter();
 
-    const handleAdminHomeClick = () => {
+    const AdminHomeClick = () => {
         router.push('/admin/addProduct');
     };
+
+    const MarketHomeClick = () => {
+        router.push('/marketplace');
+    };
+
+    const RegistroClick = () => {
+        router.push('/marketplace/registroClient');
+    };
+
 
     let content;
 
@@ -21,7 +30,7 @@ const Header = ({ role, onToggleSidebar }) => {
                     <a href="/marketplace" target="_blank" rel="noopener noreferrer">
                         MarketPlace
                     </a>
-                    <a href="/admin" onClick={handleAdminHomeClick}>
+                    <a href="/admin" onClick={AdminHomeClick}>
                         Inicio
                     </a>
                 </div>
@@ -31,12 +40,12 @@ const Header = ({ role, onToggleSidebar }) => {
     } else if (role === 'marketplace') {
         content = (
             <div className='flex justify-center w-full'>
-                <button className='flex-none mr-4' >Registrate!</button>
+                <button className='flex-none mr-4' onClick={RegistroClick} >Registrate!</button>
 
                 <div className="flex flex-grow justify-center space-x-8">
-                    <a className="hover:underline mx-4" href="#">Inicio</a>
-                    <a className="hover:underline mx-4" href="#">Acerca de</a>
-                    <a className="hover:underline mx-4" href="#">Contacto</a>
+                    <button className="hover:underline mx-4" onClick={MarketHomeClick}>Inicio</button>
+                    <button className="hover:underline mx-4" href="#">Acerca de</button>
+                    <button className="hover:underline mx-4" href="#">Contacto</button>
 
                 </div>
 

@@ -1,8 +1,7 @@
 "use client";
-
 import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase"; // Ajusta la ruta según tu estructura de carpetas
+import { db } from "../firebase";
 
 const AddProduct = ({ onProductAdd }) => {
     const [productData, setProductData] = useState({
