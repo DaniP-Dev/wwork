@@ -11,14 +11,16 @@ const EliminarEditar = ({ onProductChange }) => {
         nombre: '',
         descripcion: '',
         precio: '',
-        stock_inicial: ''
+        stock_inicial: '',
+        disponible: true,  // Por defecto se maneja como un valor booleano
     });
 
     const fetchProducts = async () => {
         const querySnapshot = await getDocs(collection(db, 'productos'));
         const productsList = [];
         querySnapshot.forEach((doc) => {
-            productsList.push({ id: doc.id, ...doc.data() });
+            const product = doc.data();
+            productsList.push({ id: doc.id, ...product });
         });
         setProducts(productsList);
         if (onProductChange) {
@@ -41,7 +43,8 @@ const EliminarEditar = ({ onProductChange }) => {
             nombre: product.nombre,
             descripcion: product.descripcion,
             precio: product.precio,
-            stock_inicial: product.stock_inicial
+            stock_inicial: product.stock_inicial,
+            disponible: product.disponible, // Asigna el valor de disponibilidad true/false
         });
     };
 
@@ -49,7 +52,7 @@ const EliminarEditar = ({ onProductChange }) => {
         const { name, value } = event.target;
         setProductData(prevData => ({
             ...prevData,
-            [name]: value
+            [name]: name === 'disponible' ? value === 'Disponible' : value,  // Convierte 'Disponible' a true y 'No Disponible' a false
         }));
     };
 
@@ -59,7 +62,8 @@ const EliminarEditar = ({ onProductChange }) => {
             nombre: productData.nombre,
             descripcion: productData.descripcion,
             precio: Number(productData.precio),
-            stock_inicial: Number(productData.stock_inicial)
+            stock_inicial: Number(productData.stock_inicial),
+            disponible: productData.disponible,  // Aquí se guarda como true/false
         });
 
         setProducts(products.map(product =>
@@ -129,6 +133,21 @@ const EliminarEditar = ({ onProductChange }) => {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                 required
                             />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="disponible">
+                                Disponibilidad
+                            </label>
+                            <select
+                                id="disponible"
+                                name="disponible"
+                                value={productData.disponible ? 'Disponible' : 'No Disponible'}  // Si es true, muestra 'Disponible'
+                                onChange={handleInputChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                            >
+                                <option value="Disponible">Disponible</option>
+                                <option value="No Disponible">No Disponible</option>
+                            </select>
                         </div>
                         <div className="flex justify-end">
                             <button
