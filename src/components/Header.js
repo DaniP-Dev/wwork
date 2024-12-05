@@ -14,7 +14,9 @@ const Header = ({ role, onToggleSidebar }) => {
     if (role === 'admin') {
         content = (
             <div className='flex items-center w-full'>
+
                 <button className='flex-none mr-4' onClick={onToggleSidebar}>click</button>
+
                 <div className="flex flex-grow justify-center space-x-8">
                     <a href="/marketplace" target="_blank" rel="noopener noreferrer">
                         MarketPlace
@@ -23,14 +25,21 @@ const Header = ({ role, onToggleSidebar }) => {
                         Inicio
                     </a>
                 </div>
+
             </div>
         );
     } else if (role === 'marketplace') {
         content = (
             <div className='flex justify-center w-full'>
-                <a className="hover:underline mx-4" href="#">Inicio</a>
-                <a className="hover:underline mx-4" href="#">Acerca de</a>
-                <a className="hover:underline mx-4" href="#">Contacto</a>
+                <button className='flex-none mr-4' >Registrate!</button>
+
+                <div className="flex flex-grow justify-center space-x-8">
+                    <a className="hover:underline mx-4" href="#">Inicio</a>
+                    <a className="hover:underline mx-4" href="#">Acerca de</a>
+                    <a className="hover:underline mx-4" href="#">Contacto</a>
+
+                </div>
+
             </div>
         );
     } else {
