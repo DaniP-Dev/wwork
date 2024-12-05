@@ -1,46 +1,54 @@
 "use client";
 
-import React, { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Ajusta la ruta según tu estructura de carpetas
+import React, { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase"; // Ajusta la ruta según tu estructura de carpetas
 
 const AddProduct = ({ onProductAdd }) => {
     const [productData, setProductData] = useState({
-        nombre: '',
-        descripcion: '',
-        precio: '',
-        categoria: 'calzado', // Categoría inicial
-        creacion: new Date(),  // Fecha de creación
-        stock_inicial: 100     // Stock inicial
+        nombre: "",
+        descripcion: "",
+        precio: "",
+        categoria: "calzado", // Categoría inicial
+        creacion: new Date(), // Fecha de creación
+        stock_inicial: 100, // Stock inicial
+        imagenURL: "", // URL de la imagen del producto
+        disponibilidad: true, // Disponibilidad del producto
     });
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setProductData((prevData) => ({
             ...prevData,
-            [name]: value
+            [name]: name === "disponibilidad" ? value === "true" : value,
         }));
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            await addDoc(collection(db, 'productos'), {
+            await addDoc(collection(db, "productos"), {
                 ...productData,
-                precio: Number(productData.precio),
+                precio: Number(productData.precio), // Convertir precio a número
+                stock_inicial: Number(productData.stock_inicial), // Convertir stock a número
+                creacion: new Date(), // Asegurar formato de fecha
             });
             console.log("Producto añadido con éxito");
-            // Limpia el formulario después de enviarlo
+
+            // Restablecer los valores del formulario
             setProductData({
-                nombre: '',
-                descripcion: '',
-                precio: '',
-                categoria: 'calzado',
+                nombre: "",
+                descripcion: "",
+                precio: "",
+                categoria: "calzado",
                 creacion: new Date(),
-                stock_inicial: 100
+                stock_inicial: 100,
+                imagenURL: "",
+                disponibilidad: true,
             });
+
             if (onProductAdd) {
-                onProductAdd(); // Llamada al callback después de agregar un producto
+                onProductAdd(); // Llama al callback para actualizar el estado padre si es necesario
             }
         } catch (e) {
             console.error("Error al agregar el producto: ", e);
@@ -119,6 +127,35 @@ const AddProduct = ({ onProductAdd }) => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         required
                     />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2" htmlFor="imagenURL">
+                        URL de la Imagen
+                    </label>
+                    <input
+                        type="text"
+                        id="imagenURL"
+                        name="imagenURL"
+                        value={productData.imagenURL}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2" htmlFor="disponibilidad">
+                        Disponibilidad
+                    </label>
+                    <select
+                        id="disponibilidad"
+                        name="disponibilidad"
+                        value={productData.disponibilidad}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                        <option value="true">Disponible</option>
+                        <option value="false">No Disponible</option>
+                    </select>
                 </div>
                 <div>
                     <button
