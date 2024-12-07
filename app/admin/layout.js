@@ -25,7 +25,6 @@ const LayoutAdmin = ({ children }) => {
                     {children}
                 </div>
             </div>
-            <Footer />
         </>
     );
 };

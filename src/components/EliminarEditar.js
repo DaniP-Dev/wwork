@@ -73,7 +73,7 @@ const EliminarEditar = ({ onProductChange }) => {
     };
 
     return (
-        <div className="max-w-full w-full mx-auto bg-white shadow-lg rounded-lg p-6 mt-16 sm:scale-100 scale-95 sm:max-w-md">
+        <div className="max-w-full w-full mx-auto bg-white shadow-lg rounded-lg p-6 mt-16 xs:scale-90 sm:scale-100 sm:mx-4 md:mx-6 lg:mx-8">
             <h2 className="text-2xl font-bold mb-4">Eliminar o Editar Productos</h2>
             {editingProduct ? (
                 <div>
@@ -167,13 +167,13 @@ const EliminarEditar = ({ onProductChange }) => {
                         products.map((product) => (
                             <li
                                 key={product.id}
-                                className="flex justify-between items-center py-3"
+                                className="flex flex-row justify-between items-start py-3 space-y-2 sm:space-y-0"
                             >
-                                <div>
+                                <div className="flex flex-col flex-grow">
                                     <p className="text-lg font-medium">{product.nombre}</p>
                                     <p className="text-sm text-gray-500">{product.descripcion}</p>
                                 </div>
-                                <div className="flex space-x-2">
+                                <div className="flex flex-col space-y-2">
                                     <button
                                         className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
                                         onClick={() => handleDelete(product.id)}

@@ -5,11 +5,11 @@ import React from 'react';
 
 const PageAddProduct = () => {
     return (
-        <div className="flex flex-row w-full h-screen items-center justify-center">
-            <div className="flex-1 max-w-lg p-2">
+        <div className="container">
+            <div className="component">
                 <AddProduct />
             </div>
-            <div className="flex-1 max-w-lg p-2">
+            <div className="component">
                 <EliminarEditar />
             </div>
         </div>
