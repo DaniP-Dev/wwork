@@ -33,11 +33,13 @@ const Sidebar = ({ isOpen, onClose }) => {
             <ul>
                 <li className="mb-4">
                     <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded" onClick={AddProductClick}>
-                        Agregar Producto
+                        Ingreso y Edicion
                     </button>
                 </li>
                 <li className="mb-4">
-                    <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded">Botón 1</button>
+                    <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded">
+                        Comportamiento de ventas
+                    </button>
                 </li>
             </ul>
         </nav>
