@@ -8,11 +8,11 @@ const AddProduct = ({ onProductAdd }) => {
         nombre: "",
         descripcion: "",
         precio: "",
-        categoria: "calzado", // Categoría inicial
-        creacion: new Date(), // Fecha de creación
-        stock_inicial: 100, // Stock inicial
-        imagenURL: "", // URL de la imagen del producto
-        disponibilidad: true, // Disponibilidad del producto
+        categoria: "calzado",
+        creacion: new Date(),
+        stock_inicial: 100,
+        imagenURL: "",
+        disponibilidad: true,
     });
 
     const handleChange = (event) => {
@@ -28,18 +28,18 @@ const AddProduct = ({ onProductAdd }) => {
         try {
             await addDoc(collection(db, "productos"), {
                 ...productData,
-                precio: Number(productData.precio), // Convertir precio a número
-                stock_inicial: Number(productData.stock_inicial), // Convertir stock a número
-                creacion: new Date(), // Asegurar formato de fecha
+                precio: Number(productData.precio),
+                stock_inicial: Number(productData.stock_inicial),
+                creacion: new Date(),
             });
             console.log("Producto añadido con éxito");
 
-            // Restablecer los valores del formulario
+
             setProductData({
                 nombre: "",
                 descripcion: "",
                 precio: "",
-                categoria: "calzado",
+                categoria: "",
                 creacion: new Date(),
                 stock_inicial: 100,
                 imagenURL: "",

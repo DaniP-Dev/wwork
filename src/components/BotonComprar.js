@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import { collection, addDoc, doc, updateDoc, arrayUnion, query, where, getDocs } from "firebase/firestore";
-import { db } from "../firebase"; // Ajusta la ruta según tu estructura de carpetas
+import { db } from "../firebase";
 
 const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [metodoPago, setMetodoPago] = useState("tarjeta");
-    const [cantidad, setCantidad] = useState(1); // Estado para la cantidad
-    const [error, setError] = useState(""); // Estado para manejar errores
+    const [cantidad, setCantidad] = useState(1);
+    const [error, setError] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -47,7 +47,7 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                 estado: "completado"
             };
 
-            // Agregar compra a la colección de compras
+
             await addDoc(collection(db, "compras"), compra);
 
             // Actualizar el historial de compras del cliente
@@ -56,10 +56,10 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                 historialCompras: arrayUnion(compra)
             });
 
-            onClose(); // Cerrar el modal después de la compra exitosa
+            onClose();
         } catch (e) {
             console.error("Error al realizar la compra: ", e);
-            setError("Error al realizar la compra: " + e.message); // Mostrar error al usuario
+            setError("Error al realizar la compra: " + e.message);
         }
     };
 
@@ -127,7 +127,7 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                             <option value="efectivo">Efectivo</option>
                         </select>
                     </div>
-                    {error && <p className="text-red-500">{error}</p>} {/* Mostrar mensaje de error */}
+                    {error && <p className="text-red-500">{error}</p>}
                     <div className="flex justify-end space-x-2">
                         <button
                             type="button"

@@ -12,7 +12,7 @@ const EliminarEditar = ({ onProductChange }) => {
         descripcion: '',
         precio: '',
         stock_inicial: '',
-        disponible: true,  // Por defecto se maneja como un valor booleano
+        disponible: true,
     });
 
     const fetchProducts = async () => {
@@ -44,7 +44,7 @@ const EliminarEditar = ({ onProductChange }) => {
             descripcion: product.descripcion,
             precio: product.precio,
             stock_inicial: product.stock_inicial,
-            disponible: product.disponible, // Asigna el valor de disponibilidad true/false
+            disponible: product.disponible,
         });
     };
 
@@ -52,7 +52,7 @@ const EliminarEditar = ({ onProductChange }) => {
         const { name, value } = event.target;
         setProductData(prevData => ({
             ...prevData,
-            [name]: name === 'disponible' ? value === 'Disponible' : value,  // Convierte 'Disponible' a true y 'No Disponible' a false
+            [name]: name === 'disponible' ? value === 'Disponible' : value,
         }));
     };
 
@@ -63,7 +63,7 @@ const EliminarEditar = ({ onProductChange }) => {
             descripcion: productData.descripcion,
             precio: Number(productData.precio),
             stock_inicial: Number(productData.stock_inicial),
-            disponible: productData.disponible,  // Aquí se guarda como true/false
+            disponible: productData.disponible,
         });
 
         setProducts(products.map(product =>

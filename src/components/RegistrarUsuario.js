@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase"; // Ajusta la ruta según tu estructura de carpetas
+import { db } from "../firebase";
 
 const RegisterUser = ({ onUserRegister }) => {
     const [userData, setUserData] = useState({
@@ -26,15 +26,15 @@ const RegisterUser = ({ onUserRegister }) => {
         try {
             await addDoc(collection(db, "clientes"), {
                 ...userData,
-                fechaRegistro: new Date(), // Asegurar formato de fecha actualizado
+                fechaRegistro: new Date(),
             });
             console.log("Usuario registrado con éxito");
 
-            // Restablecer los valores del formulario
+
             setUserData({
                 nombre: "",
-                direccion: "direccion prueba",
-                email: "email prueba",
+                direccion: "",
+                email: "",
                 fechaRegistro: new Date(),
                 historialCompras: ["pedidoID1", "pedidoID2"],
                 contraseña: ""

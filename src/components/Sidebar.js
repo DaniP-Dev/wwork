@@ -6,7 +6,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     const router = useRouter();
     const sidebarRef = useRef(null);
 
-    const handleAddProductClick = () => {
+    const AddProductClick = () => {
         router.push('/admin/addProduct');
     };
 
@@ -32,7 +32,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         >
             <ul>
                 <li className="mb-4">
-                    <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded" onClick={handleAddProductClick}>
+                    <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded" onClick={AddProductClick}>
                         Agregar Producto
                     </button>
                 </li>

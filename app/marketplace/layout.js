@@ -10,7 +10,7 @@ const layoutMarket = ({ children }) => {
     return (
         <>
             <Header role='marketplace' />
-            <div className="mt-16"> {/* Ajuste el margen superior */}
+            <div className="mt-16">
                 {children}
             </div>
             <Footer />

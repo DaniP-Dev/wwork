@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import BotonComprar from './BotonComprar'; // Ajusta la ruta según tu estructura de carpetas
+import BotonComprar from './BotonComprar';
 
 const ProductCard = () => {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
-
+    const [showModal, setShowModal] = useState(false);
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -39,7 +38,7 @@ const ProductCard = () => {
         setSelectedProduct(null);
     };
 
-    // Filtrar los productos que tienen "disponible" como true
+    //productos disponibles o no
     const availableProducts = products.filter(product => product.disponible === true);
 
     return (
@@ -63,20 +62,17 @@ const ProductCard = () => {
                         <p className="text-blue-600 font-bold truncate">{product.precio}</p>
                     </div>
 
-                    {/* Detalles adicionales, visibles solo si el producto está seleccionado */}
                     {selectedProduct?.id === product.id && (
                         <div className="p-4 mt-4 text-gray-600">
                             <h3 className="font-semibold">Descripción</h3>
                             <p>{product.descripcion}</p>
 
-                            {/* Disponibilidad */}
                             <div className="mt-2">
                                 <p className={product.stock_inicial > 0 ? 'text-green-500' : 'text-red-500'}>
                                     {product.stock_inicial > 0 ? 'Disponible' : 'No disponible'}
                                 </p>
                             </div>
 
-                            {/* Botón para abrir el modal */}
                             <div className="mt-4">
                                 <button
                                     onClick={openModal}
@@ -90,7 +86,6 @@ const ProductCard = () => {
                 </div>
             ))}
 
-            {/* Modal de Comprar */}
             {showModal && selectedProduct && (
                 <BotonComprar
                     productoID={selectedProduct.id}
