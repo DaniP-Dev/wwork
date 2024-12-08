@@ -14,6 +14,7 @@ const Formulario = () => {
         productData,
         categorias,
         nuevaCategoria,
+        setNuevaCategoria,
         isSubmitting,
         error,
         mensajeExito,
@@ -248,11 +249,10 @@ const Formulario = () => {
     const renderSelectores = () => (
         <>
             <div className="mb-4">
-                <label htmlFor="categoria" className="mb-1 text-sm font-medium text-gray-700">
+                <label className="block text-gray-700 font-bold mb-2">
                     Categoría
                 </label>
                 <select
-                    id="categoria"
                     name="categoria"
                     value={productData.categoria}
                     onChange={handleChange}
@@ -260,9 +260,9 @@ const Formulario = () => {
                     required
                 >
                     <option value="">Seleccione una categoría</option>
-                    {categorias.map((categoria) => (
-                        <option key={categoria} value={categoria}>
-                            {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+                    {categorias.map((cat) => (
+                        <option key={cat} value={cat}>
+                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
                         </option>
                     ))}
                     <option value="nueva">+ Agregar nueva categoría</option>
@@ -271,16 +271,15 @@ const Formulario = () => {
 
             {productData.categoria === 'nueva' && (
                 <div className="mb-4">
-                    <label htmlFor="nuevaCategoria" className="mb-1 text-sm font-medium text-gray-700">
+                    <label className="block text-gray-700 font-bold mb-2">
                         Nueva Categoría
                     </label>
                     <input
                         type="text"
-                        id="nuevaCategoria"
-                        name="nuevaCategoria"
                         value={nuevaCategoria}
-                        onChange={handleChange}
+                        onChange={(e) => setNuevaCategoria(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        placeholder="Escriba el nombre de la nueva categoría"
                         required
                     />
                 </div>

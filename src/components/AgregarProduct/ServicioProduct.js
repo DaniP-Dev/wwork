@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, getDocs, onSnapshot, doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
 class ServicioProduct {
@@ -43,6 +43,19 @@ class ServicioProduct {
             });
             callback(Array.from(categoriasUnicas).sort());
         });
+    }
+
+    async agregarCategoria(nombreCategoria) {
+        try {
+            const categoriaRef = doc(db, 'categorias', nombreCategoria);
+            await setDoc(categoriaRef, {
+                nombre: nombreCategoria,
+                creacion: new Date()
+            });
+            return true;
+        } catch (error) {
+            throw new Error('Error al agregar la categoría: ' + error.message);
+        }
     }
 }
 

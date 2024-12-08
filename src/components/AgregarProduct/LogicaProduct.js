@@ -19,10 +19,10 @@ const ESTADO_INICIAL = {
 export const useLogicaProduct = (servicioProduct) => {
     const [productData, setProductData] = useState(ESTADO_INICIAL);
     const [categorias, setCategorias] = useState([]);
+    const [nuevaCategoria, setNuevaCategoria] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [mensajeExito, setMensajeExito] = useState(null);
-    const [nuevaCategoria, setNuevaCategoria] = useState('');
 
     useEffect(() => {
         const unsubscribe = servicioProduct.observarCategorias(setCategorias);
@@ -65,15 +65,20 @@ export const useLogicaProduct = (servicioProduct) => {
         const gananciaPorcentajeNumero = Number(gananciaPorcentaje || 0);
         const ivaNumero = ivaOverride !== null ? Number(ivaOverride) : Number(productData.iva || 0);
         
-        // Calcula la ganancia total del lote
-        const gananciaValor = (precioLoteNumero * gananciaPorcentajeNumero) / 100;
+        // Primero calculamos el precio base por unidad
+        const precioBaseUnidad = precioLoteNumero / stock;
         
-        // Calcula la ganancia por unidad
-        const gananciaUnidad = gananciaValor / stock;
+        // Aplicamos el IVA al precio base
+        const precioConIva = precioBaseUnidad * (1 + (ivaNumero / 100));
         
-        // Calcula el valor de venta por unidad (incluyendo IVA)
-        const subtotalVentaUnidad = (precioLoteNumero + gananciaValor) / stock;
-        const valorVentaUnidad = subtotalVentaUnidad * (1 + (ivaNumero / 100));
+        // Calculamos la ganancia sobre el precio con IVA
+        const gananciaUnidad = (precioConIva * gananciaPorcentajeNumero) / 100;
+        
+        // Calculamos la ganancia total del lote
+        const gananciaValor = gananciaUnidad * stock;
+        
+        // El valor de venta es el precio con IVA más la ganancia
+        const valorVentaUnidad = precioConIva + gananciaUnidad;
         
         return {
             gananciaValor: formatearPrecioCalculado(gananciaValor),
@@ -253,29 +258,67 @@ export const useLogicaProduct = (servicioProduct) => {
         setMensajeExito(null);
 
         try {
+            // Manejo de nueva categoría
             const categoriaFinal = productData.categoria === 'nueva' 
                 ? nuevaCategoria.toLowerCase().trim() 
-                : productData.categoria;
+                : productData.categoria.toLowerCase().trim();
+
+            // Validaciones de categoría
+            if (!categoriaFinal) {
+                throw new Error('La categoría es requerida');
+            }
 
             if (categoriaFinal.toLowerCase() === 'nuevo' || categoriaFinal.toLowerCase() === 'nueva') {
                 throw new Error('No se permite usar "Nuevo" o "Nueva" como nombre de categoría.');
             }
 
+            // Si es categoría nueva, primero la agregamos a la colección de categorías
+            if (productData.categoria === 'nueva') {
+                await servicioProduct.agregarCategoria(categoriaFinal);
+            }
+
             const productoParaGuardar = {
-                ...productData,
-                categoria: categoriaFinal,
+                // Campos visibles en el formulario
+                nombre: productData.nombre,
+                descripcion: productData.descripcion,
                 precio: Number(productData.precio.replace(/,/g, '')),
                 precio_lote: Number(productData.precio_lote.replace(/,/g, '')),
+                ganancia_porcentaje: Number(productData.ganancia_porcentaje),
+                ganancia_valor: Number(productData.ganancia_valor.replace(/,/g, '')),
+                ganancia_unidad: Number(productData.ganancia_unidad.replace(/,/g, '')),
+                valor_venta: Number(productData.valor_venta.replace(/,/g, '')),
                 stock_inicial: Number(productData.stock_inicial),
+                iva: Number(productData.iva),
+                imagenURL: productData.imagenURL || '',
+
+                // Campos no visibles pero necesarios
+                categoria: categoriaFinal,
                 creacion: new Date(),
+                disponible: true,
+                ultima_actualizacion: new Date(),
+                stock_actual: Number(productData.stock_inicial),
             };
 
+            // Verificaciones
+            Object.keys(productoParaGuardar).forEach(key => {
+                if (productoParaGuardar[key] === undefined || productoParaGuardar[key] === null) {
+                    throw new Error(`El campo ${key} es requerido`);
+                }
+                if (typeof productoParaGuardar[key] === 'number' && isNaN(productoParaGuardar[key])) {
+                    throw new Error(`El campo ${key} debe ser un número válido`);
+                }
+            });
+
+            console.log('Guardando producto:', productoParaGuardar);
             await servicioProduct.agregarProducto(productoParaGuardar);
+            
             setProductData(ESTADO_INICIAL);
+            setNuevaCategoria(''); // Limpiamos el campo de nueva categoría
             setMensajeExito('¡Producto agregado exitosamente!');
             
             setTimeout(() => setMensajeExito(null), 3000);
         } catch (error) {
+            console.error('Error al guardar:', error);
             setError(error.message);
         } finally {
             setIsSubmitting(false);
@@ -286,6 +329,7 @@ export const useLogicaProduct = (servicioProduct) => {
         productData,
         categorias,
         nuevaCategoria,
+        setNuevaCategoria,
         isSubmitting,
         error,
         mensajeExito,
