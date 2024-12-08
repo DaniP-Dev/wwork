@@ -1,6 +1,6 @@
 "use client";
-import AddProduct from '@/components/AddProduct';
 import EliminarEditar from '@/components/EliminarEditar';
+import Formulario from '@/components/AgregarProduct/Formulario';
 import React from 'react';
 
 const PageAddProduct = () => {
@@ -8,7 +8,7 @@ const PageAddProduct = () => {
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="w-full">
-                    <AddProduct />
+                    <Formulario />
                 </div>
                 <div className="w-full">
                     <EliminarEditar />
