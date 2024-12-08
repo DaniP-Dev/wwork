@@ -4,18 +4,16 @@ import "./globals.css";
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 
-
-
-const layoutMarket = ({ children }) => {
-    return (
-        <>
-            <Header role='marketplace' />
-            <div className="mt-16">
-                {children}
-            </div>
-            <Footer />
-        </>
-    );
+const LayoutMarket = ({ children }) => {
+  return (
+    <div className="flex flex-col flex-1">
+      <Header role='marketplace' />
+      <main className="flex-1">
+        {children}
+      </main>
+      <Footer />
+    </div>
+  );
 };
 
-export default layoutMarket;
+export default LayoutMarket;

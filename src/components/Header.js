@@ -5,59 +5,80 @@ import { useRouter } from 'next/navigation';
 const Header = ({ role, onToggleSidebar }) => {
     const router = useRouter();
 
-    const AdminHomeClick = () => {
-        router.push('/admin/addProduct');
+    // Configuración de navegación por rol
+    const navConfig = {
+        admin: [
+            { 
+                label: 'MarketPlace', 
+                action: () => window.open('/marketplace', '_blank'),
+            },
+            { 
+                label: 'Inicio', 
+                action: () => router.push('/admin/'),
+            }
+        ],
+        marketplace: [
+            { 
+                label: 'Inicio', 
+                action: () => router.push('/marketplace'),
+            },
+            { 
+                label: 'Acerca de', 
+                action: () => router.push('#'),
+            },
+            { 
+                label: 'Contacto', 
+                action: () => router.push('#'),
+            }
+        ]
     };
 
-    const MarketHomeClick = () => {
-        router.push('/marketplace');
-    };
+    const renderContent = () => {
+        if (!navConfig[role]) {
+            return <p>Perfil no reconocido</p>;
+        }
 
-    const RegistroClick = () => {
-        router.push('/marketplace/registroClient');
-    };
-
-
-    let content;
-
-    if (role === 'admin') {
-        content = (
+        return (
             <div className='flex items-center w-full'>
+                {role === 'admin' && (
+                    <button 
+                        className='flex-none mr-4' 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleSidebar();
+                        }}
+                    >
+                        ☰
+                    </button>
+                )}
+                
+                {role === 'marketplace' && (
+                    <button 
+                        className='flex-none mr-4' 
+                        onClick={() => router.push('/marketplace/registroClient')}
+                    >
+                        Registrate!
+                    </button>
+                )}
 
-                <button className='flex-none mr-4' onClick={onToggleSidebar}>click</button>
-
-                <div className="flex flex-grow justify-center space-x-8">
-                    <a href="/marketplace" target="_blank" rel="noopener noreferrer">
-                        MarketPlace
-                    </a>
-                    <a href="/admin" onClick={AdminHomeClick}>
-                        Inicio
-                    </a>
-                </div>
-
+                <nav className="flex flex-grow justify-center space-x-8">
+                    {navConfig[role].map(({ label, action }) => (
+                        <button 
+                            key={label}
+                            onClick={action}
+                            className="hover:underline mx-4"
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </nav>
             </div>
         );
-    } else if (role === 'marketplace') {
-        content = (
-            <div className='flex justify-center w-full'>
-                <button className='flex-none mr-4' onClick={RegistroClick} >Registrate!</button>
-
-                <div className="flex flex-grow justify-center space-x-8">
-                    <button className="hover:underline mx-4" onClick={MarketHomeClick}>Inicio</button>
-                    <button className="hover:underline mx-4" href="#">Acerca de</button>
-                    <button className="hover:underline mx-4" href="#">Contacto</button>
-
-                </div>
-
-            </div>
-        );
-    } else {
-        content = <p>Perfil no reconocido</p>;
-    }
+    };
 
     return (
-        <header className='bg-blue-600 text-white p-4 shadow-lg flex fixed top-0 left-0 w-full h-16 z-50'>
-            {content}
+        <header className='bg-blue-600 text-white p-4 shadow-lg flex fixed top-0 left-0 w-full h-16 z-[100]'>
+            {renderContent()}
         </header>
     );
 };

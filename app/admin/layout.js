@@ -1,31 +1,60 @@
 "use client";
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import "./globals.css";
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import Footer from '@/components/Footer';
+import { useCallback, useEffect, useState } from 'react';
 
 const LayoutAdmin = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    
+    // Combinamos los event listeners en un solo useEffect
+    useEffect(() => {
+        const handleEsc = (event) => {
+            if (event.key === 'Escape') setIsSidebarOpen(false);
+        };
+        
+        const handleResize = () => {
+            if (window.innerWidth < 768) setIsSidebarOpen(false);
+        };
 
-    const toggleSidebar = useCallback(() => {
-        setIsSidebarOpen(prevState => !prevState);
+        window.addEventListener('keydown', handleEsc);
+        window.addEventListener('resize', handleResize);
+        
+        // Limpieza de event listeners
+        return () => {
+            window.removeEventListener('keydown', handleEsc);
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
-    const closeSidebar = useCallback(() => {
-        setIsSidebarOpen(false);
+    const toggleSidebar = useCallback(() => {
+        setIsSidebarOpen(prev => !prev);
     }, []);
 
     return (
-        <>
-            <Header role='admin' onToggleSidebar={toggleSidebar} />
-            <div className="flex">
-                <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-                <div className="flex-1 mt-16">
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+            <Header 
+                role="admin" 
+                onToggleSidebar={toggleSidebar}
+            />
+            <div className="flex flex-1 relative mt-16">
+                <Sidebar 
+                    isOpen={isSidebarOpen} 
+                    onClose={() => setIsSidebarOpen(false)}
+                    className="z-40 top-16"
+                />
+                <main 
+                    className={`
+                        flex-1 p-4 
+                        transition-all duration-300
+                        ${isSidebarOpen ? 'md:ml-64' : 'ml-0'}
+                    `}
+                >
                     {children}
-                </div>
+                </main>
             </div>
-        </>
+        </div>
     );
 };
 

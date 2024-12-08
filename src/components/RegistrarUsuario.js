@@ -2,56 +2,121 @@
 import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import { useRouter } from 'next/navigation';
 
-const RegisterUser = ({ onUserRegister }) => {
-    const [userData, setUserData] = useState({
+const RegistrarUsuario = ({ alRegistrarUsuario }) => {
+    const router = useRouter();
+    const [datosUsuario, setDatosUsuario] = useState({
         nombre: "",
-        direccion: "direccion prueba",
-        email: "email prueba",
-        fechaRegistro: new Date("December 5, 2024 08:04:29"),
-        historialCompras: ["pedidoID1", "pedidoID2"],
+        apellido: "",
+        direccion: "",
+        email: "",
+        fechaRegistro: new Date(),
+        historialCompras: [],
         contraseña: ""
     });
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setUserData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+    const [errores, setErrores] = useState({
+        email: "",
+        contraseña: ""
+    });
+
+    const [mensajeExito, setMensajeExito] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
+
+    const validarEmail = (email) => {
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regexEmail.test(email);
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const validarContraseña = (contraseña) => {
+        return contraseña.length >= 8 && // Mínimo 8 caracteres
+            /[A-Z]/.test(contraseña) && // Al menos una mayúscula
+            /[a-z]/.test(contraseña) && // Al menos una minúscula
+            /[0-9]/.test(contraseña) && // Al menos un número
+            /[!@#$%^&*]/.test(contraseña); // Al menos un carácter especial
+    };
+
+    const manejarCambio = (evento) => {
+        const { name, value } = evento.target;
+        setDatosUsuario((datosAnteriores) => ({
+            ...datosAnteriores,
+            [name]: value,
+        }));
+
+        // Validaciones
+        if (name === 'email') {
+            setErrores(prev => ({
+                ...prev,
+                email: validarEmail(value) ? "" : "Email inválido"
+            }));
+        }
+        if (name === 'contraseña') {
+            setErrores(prev => ({
+                ...prev,
+                contraseña: validarContraseña(value) 
+                    ? "" 
+                    : "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial"
+            }));
+        }
+    };
+
+    const manejarEnvio = async (evento) => {
+        evento.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
         try {
             await addDoc(collection(db, "clientes"), {
-                ...userData,
+                ...datosUsuario,
                 fechaRegistro: new Date(),
             });
-            console.log("Usuario registrado con éxito");
-
-
-            setUserData({
+            
+            setMensajeExito('¡Usuario registrado exitosamente!');
+            
+            setDatosUsuario({
                 nombre: "",
+                apellido: "",
                 direccion: "",
                 email: "",
                 fechaRegistro: new Date(),
-                historialCompras: ["pedidoID1", "pedidoID2"],
+                historialCompras: [],
                 contraseña: ""
             });
 
-            if (onUserRegister) {
-                onUserRegister(); // Llama al callback para actualizar el estado padre si es necesario
+            if (alRegistrarUsuario) {
+                alRegistrarUsuario();
             }
-        } catch (e) {
-            console.error("Error al registrar el usuario: ", e);
+
+            setTimeout(() => {
+                router.push('/marketplace');
+            }, 3000);
+            
+        } catch (error) {
+            console.error("Error al registrar el usuario: ", error);
+            setError('Error al registrar el usuario. Por favor, intente nuevamente.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 mt-16 sm:scale-100 scale-95 sm:max-w-md">
             <h2 className="text-2xl font-bold mb-4">Registrar Usuario</h2>
-            <form onSubmit={handleSubmit}>
+            
+            {mensajeExito && (
+                <div className="mb-2 p-2 bg-green-100 text-green-700 rounded">
+                    {mensajeExito}
+                </div>
+            )}
+            
+            {error && (
+                <div className="mb-2 p-2 bg-red-100 text-red-700 rounded">
+                    {error}
+                </div>
+            )}
+
+            <form onSubmit={manejarEnvio}>
                 <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="nombre">
                         Nombre
@@ -60,8 +125,22 @@ const RegisterUser = ({ onUserRegister }) => {
                         type="text"
                         id="nombre"
                         name="nombre"
-                        value={userData.nombre}
-                        onChange={handleChange}
+                        value={datosUsuario.nombre}
+                        onChange={manejarCambio}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2" htmlFor="apellido">
+                        Apellido
+                    </label>
+                    <input
+                        type="text"
+                        id="apellido"
+                        name="apellido"
+                        value={datosUsuario.apellido}
+                        onChange={manejarCambio}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         required
                     />
@@ -74,8 +153,8 @@ const RegisterUser = ({ onUserRegister }) => {
                         type="text"
                         id="direccion"
                         name="direccion"
-                        value={userData.direccion}
-                        onChange={handleChange}
+                        value={datosUsuario.direccion}
+                        onChange={manejarCambio}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         required
                     />
@@ -88,11 +167,16 @@ const RegisterUser = ({ onUserRegister }) => {
                         type="email"
                         id="email"
                         name="email"
-                        value={userData.email}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        value={datosUsuario.email}
+                        onChange={manejarCambio}
+                        className={`w-full px-3 py-2 border rounded-md ${
+                            errores.email ? 'border-red-500' : 'border-gray-300'
+                        }`}
                         required
                     />
+                    {errores.email && (
+                        <p className="text-red-500 text-sm mt-1">{errores.email}</p>
+                    )}
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="contraseña">
@@ -102,18 +186,25 @@ const RegisterUser = ({ onUserRegister }) => {
                         type="password"
                         id="contraseña"
                         name="contraseña"
-                        value={userData.contraseña}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        value={datosUsuario.contraseña}
+                        onChange={manejarCambio}
+                        className={`w-full px-3 py-2 border rounded-md ${
+                            errores.contraseña ? 'border-red-500' : 'border-gray-300'
+                        }`}
                         required
                     />
+                    {errores.contraseña && (
+                        <p className="text-red-500 text-sm mt-1">{errores.contraseña}</p>
+                    )}
                 </div>
-                <div>
+                <div className="flex justify-center mt-6">
                     <button
                         type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        disabled={isSubmitting}
+                        className={`bg-blue-500 text-white px-6 py-2 rounded-md 
+                            ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
                     >
-                        Registrar Usuario
+                        {isSubmitting ? 'Registrando...' : 'Registrar Usuario'}
                     </button>
                 </div>
             </form>
@@ -121,4 +212,4 @@ const RegisterUser = ({ onUserRegister }) => {
     );
 };
 
-export default RegisterUser;
+export default RegistrarUsuario;

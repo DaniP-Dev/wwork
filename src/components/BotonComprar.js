@@ -5,67 +5,107 @@ import { collection, addDoc, doc, updateDoc, arrayUnion, query, where, getDocs }
 import { db } from "../firebase";
 
 const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [metodoPago, setMetodoPago] = useState("tarjeta");
-    const [cantidad, setCantidad] = useState(1);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        metodoPago: "tarjeta",
+        cantidad: 1
+    });
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [notification, setNotification] = useState({ type: '', message: '' });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const validarFormulario = () => {
+        if (!formData.email || !formData.password || formData.cantidad < 1) {
+            throw new Error("Por favor complete todos los campos correctamente");
+        }
+    };
+
+    const buscarCliente = async () => {
+        const q = query(collection(db, "clientes"), where("email", "==", formData.email));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            throw new Error("Correo electrónico no encontrado");
+        }
+        return querySnapshot.docs[0];
+    };
+
+    const crearCompra = (clienteID) => ({
+        clienteID,
+        fecha: new Date().toISOString(),
+        productos: [{
+            productoID,
+            cantidad: Number(formData.cantidad),
+            precioUnitario,
+        }],
+        total: Number(formData.cantidad) * precioUnitario,
+        metodoPago: formData.metodoPago,
+        estado: "completado"
+    });
+
+    const mostrarNotificacion = (type, message) => {
+        setNotification({ type, message });
+        if (type === 'success') {
+            setTimeout(() => {
+                setNotification({ type: '', message: '' });
+                onClose();
+            }, 2000);
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
+        setError("");
+        setNotification({ type: '', message: '' });
 
         try {
-            // Buscar el cliente basado en el correo electrónico
-            const q = query(collection(db, "clientes"), where("email", "==", email));
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) {
-                throw new Error("Correo electrónico no encontrado");
-            }
-            const clienteDoc = querySnapshot.docs[0];
+            validarFormulario();
+            
+            const clienteDoc = await buscarCliente();
             const clienteData = clienteDoc.data();
 
-            // Verificar si la contraseña es correcta
-            if (clienteData.contraseña !== password) {
-                throw new Error("Contraseña incorrecta");
+            if (clienteData.contraseña !== formData.password) {
+                mostrarNotificacion('error', 'Credenciales inválidas');
+                return;
             }
 
-            const clienteID = clienteDoc.id;
-
-            // Documento de compra
-            const compra = {
-                clienteID,
-                fecha: new Date().toISOString(),
-                productos: [
-                    {
-                        productoID,
-                        cantidad,
-                        precioUnitario,
-                    }
-                ],
-                total: cantidad * precioUnitario,
-                metodoPago,
-                estado: "completado"
-            };
-
-
+            const compra = crearCompra(clienteDoc.id);
+            
             await addDoc(collection(db, "compras"), compra);
-
-            // Actualizar el historial de compras del cliente
-            const clienteRef = doc(db, "clientes", clienteID);
-            await updateDoc(clienteRef, {
+            await updateDoc(doc(db, "clientes", clienteDoc.id), {
                 historialCompras: arrayUnion(compra)
             });
 
-            onClose();
+            mostrarNotificacion('success', '¡Compra realizada con éxito!');
         } catch (e) {
             console.error("Error al realizar la compra: ", e);
-            setError("Error al realizar la compra: " + e.message);
+            mostrarNotificacion('error', e.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm mx-auto">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm mx-auto relative">
+                {/* Notificación */}
+                {notification.message && (
+                    <div className={`absolute top-0 left-0 right-0 p-3 text-white text-center ${
+                        notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+                    }`}>
+                        {notification.message}
+                    </div>
+                )}
+                
                 <h2 className="text-2xl font-bold mb-4">Comprar Producto</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
@@ -76,8 +116,8 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                             type="email"
                             id="email"
                             name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={formData.email}
+                            onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                             required
                         />
@@ -90,8 +130,8 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                             type="password"
                             id="password"
                             name="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={formData.password}
+                            onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                             required
                         />
@@ -104,8 +144,8 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                             type="number"
                             id="cantidad"
                             name="cantidad"
-                            value={cantidad}
-                            onChange={(e) => setCantidad(e.target.value)}
+                            value={formData.cantidad}
+                            onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                             min="1"
                             required
@@ -118,8 +158,8 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                         <select
                             id="metodoPago"
                             name="metodoPago"
-                            value={metodoPago}
-                            onChange={(e) => setMetodoPago(e.target.value)}
+                            value={formData.metodoPago}
+                            onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         >
                             <option value="tarjeta">Tarjeta</option>
@@ -127,20 +167,22 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
                             <option value="efectivo">Efectivo</option>
                         </select>
                     </div>
-                    {error && <p className="text-red-500">{error}</p>}
+                    {error && <p className="text-red-500 mb-4">{error}</p>}
                     <div className="flex justify-end space-x-2">
                         <button
                             type="button"
                             className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
                             onClick={onClose}
+                            disabled={isLoading}
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                            disabled={isLoading}
                         >
-                            Confirmar Compra
+                            {isLoading ? "Procesando..." : "Confirmar Compra"}
                         </button>
                     </div>
                 </form>

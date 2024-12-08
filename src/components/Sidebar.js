@@ -4,35 +4,36 @@ import { useRouter } from 'next/navigation';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const router = useRouter();
-    const sidebarRef = useRef(null);
+    const referenciaLateral = useRef(null);
 
-    const AddProductClick = () => {
+    const clickAgregarProducto = () => {
         router.push('/admin/addProduct');
+        onClose();
     };
 
-    const handleClickOutside = (event) => {
-        if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+    const manejarClickFuera = (evento) => {
+        if (referenciaLateral.current && !referenciaLateral.current.contains(evento.target)) {
             onClose();
         }
     };
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('mousedown', manejarClickFuera);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', manejarClickFuera);
         };
     }, []);
 
     return (
         <nav
-            ref={sidebarRef}
+            ref={referenciaLateral}
             className={`p-4 bg-blue-400 fixed top-16 left-0 h-[calc(100vh-64px)] w-64 transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
                 } sidebar`}
             style={{ zIndex: 1000 }}
         >
             <ul>
                 <li className="mb-4">
-                    <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded" onClick={AddProductClick}>
+                    <button className="w-full text-left py-2 px-4 hover:bg-blue-500 rounded" onClick={clickAgregarProducto}>
                         Ingreso y Edicion
                     </button>
                 </li>
