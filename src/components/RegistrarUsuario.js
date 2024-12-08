@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { useRouter } from 'next/navigation';
 
@@ -62,11 +62,27 @@ const RegistrarUsuario = ({ alRegistrarUsuario }) => {
         }
     };
 
+    const verificarEmailExistente = async (email) => {
+        const q = query(collection(db, "clientes"), where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty;
+    };
+
     const manejarEnvio = async (evento) => {
         evento.preventDefault();
         setIsSubmitting(true);
         setError(null);
+        
         try {
+            // Verificar si el email ya existe
+            const emailExiste = await verificarEmailExistente(datosUsuario.email);
+            
+            if (emailExiste) {
+                setError('Este correo electrónico ya está registrado. Por favor, utilice otro.');
+                setIsSubmitting(false);
+                return;
+            }
+
             await addDoc(collection(db, "clientes"), {
                 ...datosUsuario,
                 fechaRegistro: new Date(),
