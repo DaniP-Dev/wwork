@@ -6,9 +6,9 @@ import Header from '@/components/Header';
 
 const LayoutMarket = ({ children }) => {
   return (
-    <div className="flex flex-col flex-1">
-      <Header role='marketplace' />
-      <main className="flex-1">
+    <div className="min-h-screen flex flex-col">
+      <Header role='marketplace' className="sticky top-0 w-full z-50" />
+      <main className="flex-1 pt-16 md:pt-20 w-full">
         {children}
       </main>
       <Footer />

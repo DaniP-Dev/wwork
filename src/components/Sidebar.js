@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, className }) => {
     const router = useRouter();
     const referenciaLateral = useRef(null);
 
@@ -27,9 +27,17 @@ const Sidebar = ({ isOpen, onClose }) => {
     return (
         <nav
             ref={referenciaLateral}
-            className={`p-4 bg-blue-400 fixed top-16 left-0 h-[calc(100vh-64px)] w-64 transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
-                } sidebar`}
-            style={{ zIndex: 1000 }}
+            className={`
+                fixed top-16 left-0 
+                h-[calc(100vh-4rem)] 
+                w-64 
+                bg-blue-400 
+                p-4 
+                transition-transform duration-300 ease-in-out 
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+                z-40
+                ${className}
+            `}
         >
             <ul>
                 <li className="mb-4">

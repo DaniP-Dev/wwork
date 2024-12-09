@@ -23,10 +23,13 @@ const FormularioChatBot = () => {
 
   return (
     <div className={`
-      fixed top-16 right-0 h-[calc(100dvh-4rem)] 
+      fixed top-16 right-0 
+      h-[calc(100vh-4rem)] 
       transition-all duration-300 ease-in-out
       ${isCollapsed ? 'w-0' : 'w-[350px]'}
-      bg-white shadow-lg flex flex-col
+      bg-white shadow-lg 
+      flex flex-col
+      z-40
     `}>
       {/* Botón para colapsar */}
       <button

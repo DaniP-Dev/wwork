@@ -8,35 +8,31 @@ import TasaRetornoClientes from '@/components/TasaRetornoClientes';
 
 const page = () => {
     return (
-        <div className="p-4">
-            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div className="py-8 px-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex items-center justify-center">
-                    <div className="text-center w-full">
+        <div>
+            <div className="grid-container">
+                <div className="card">
+                    <div className="card-content">
                         <TotalVentas />
                     </div>
                 </div>
-                <div className="py-8 px-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex items-center justify-center">
-                    <div className="text-center w-full">
+                <div className="card">
+                    <div className="card-content">
                         <NumeroTransacciones />
                     </div>
                 </div>
-                <div className="py-8 px-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex items-center justify-center">
-                    <div className="text-center w-full">
+                <div className="card">
+                    <div className="card-content">
                         <PromedioVentasPorDia />
                     </div>
                 </div>
-                <div className="py-8 px-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex items-center justify-center">
-                    <div className="text-center w-full">
+                <div className="card">
+                    <div className="card-content">
                         <TasaRetornoClientes />
                     </div>
                 </div>
             </div>
-            <div className="flex justify-center w-full mt-6">
-                <div className="w-full max-w-screen-xl p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
-                    <div className="text-center w-full">
-                        <IngresosPorCategoria />
-                    </div>
-                </div>
+            <div className="chart-container">
+                <IngresosPorCategoria />
             </div>
         </div>
     );

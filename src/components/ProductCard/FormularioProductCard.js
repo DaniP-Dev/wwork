@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import BotonComprar from './components/BotonComprar';
 
-const FormularioProductCard = ({ product }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const FormularioProductCard = ({ product, activeCard, onCardClick }) => {
     const [showModal, setShowModal] = useState(false);
+    const isExpanded = activeCard === product.id;
 
     if (!product) return null;
 
@@ -11,13 +11,14 @@ const FormularioProductCard = ({ product }) => {
         <>
             <article 
                 className={`
-                    bg-white shadow-md rounded-lg p-4 
+                    bg-white shadow-md rounded-lg p-4 m-4
                     flex flex-col transition-all duration-300 ease-in-out cursor-pointer
-                    ${isExpanded ? 'h-auto' : 'h-64'}
+                    hover:shadow-xl hover:scale-105 hover:bg-gray-50
+                    ${isExpanded ? 'h-auto' : 'h-[50vh]'}
                 `}
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={() => onCardClick(isExpanded ? null : product.id)}
             >
-                <figure className="w-full h-48 bg-gray-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <figure className="w-full h-[30vh] bg-gray-200 rounded-t-lg flex items-center justify-center overflow-hidden">
                     <img
                         src={product.image || 'https://via.placeholder.com/150'}
                         alt={product.nombre}

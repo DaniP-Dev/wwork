@@ -77,7 +77,7 @@ const Header = ({ role, onToggleSidebar }) => {
     };
 
     return (
-        <header className='bg-blue-600 text-white p-4 shadow-lg flex fixed top-0 left-0 w-full h-16 z-[100]'>
+        <header className='bg-blue-600 text-white p-4 shadow-lg flex fixed top-0 left-0 w-full h-16 z-50'>
             {renderContent()}
         </header>
     );

@@ -3,60 +3,52 @@ import React from 'react';
 import "./globals.css";
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import FormularioChatBot from '@/components/ChatBot/FormularioChatBot';
 
 const LayoutAdmin = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
-    // Combinamos los event listeners en un solo useEffect
-    useEffect(() => {
-        const handleEsc = (event) => {
-            if (event.key === 'Escape') setIsSidebarOpen(false);
-        };
-        
-        const handleResize = () => {
-            if (window.innerWidth < 768) setIsSidebarOpen(false);
-        };
-
-        window.addEventListener('keydown', handleEsc);
-        window.addEventListener('resize', handleResize);
-        
-        // Limpieza de event listeners
-        return () => {
-            window.removeEventListener('keydown', handleEsc);
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     const toggleSidebar = useCallback(() => {
         setIsSidebarOpen(prev => !prev);
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col relative">
+        <div className="min-h-screen flex flex-col">
             <Header 
                 role="admin" 
                 onToggleSidebar={toggleSidebar}
+                className="fixed top-0 left-0 right-0 h-16 z-50 bg-white shadow-md"
             />
-            <div className="flex flex-1 relative mt-16">
+
+            <div className="flex flex-1 mt-16">
                 <Sidebar 
                     isOpen={isSidebarOpen} 
                     onClose={() => setIsSidebarOpen(false)}
-                    className="z-40 top-16"
-                />
-                <main 
                     className={`
-                        flex-1 p-4 
-                        transition-all duration-300
-                        ${isSidebarOpen ? 'md:ml-64' : 'ml-0'}
-                        md:mr-[350px]
+                        fixed top-16 left-0 
+                        h-[calc(100vh-4rem)] 
+                        w-64
+                        transition-transform duration-300 ease-in-out
+                        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                        md:translate-x-0 md:static md:h-[calc(100vh-4rem)]
+                        z-40 bg-white shadow-lg
                     `}
-                >
-                    {children}
+                />
+
+                <main className={`
+                    flex-1 
+                    transition-all duration-300 ease-in-out
+                    w-full
+                    ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}
+                `}>
+                    <div className="container mx-auto px-4 py-6">
+                        {children}
+                    </div>
                 </main>
             </div>
-            <FormularioChatBot />
+
+            <FormularioChatBot className="fixed bottom-4 right-4 z-40" />
         </div>
     );
 };
