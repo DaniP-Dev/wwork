@@ -64,11 +64,11 @@ const Formulario = () => {
 
     const renderGananciaSection = () => (
         <div className="mb-4">
-            <h3 className="text-center mb-3 text-sm font-medium text-gray-700">
-                ¿Qué ganancia le quieres obtener al producto?
-            </h3>
-            <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-3">
+            <div className="grid grid-cols-12 gap-1 sm:gap-4">
+                <div className="col-span-3 sm:col-span-2">
+                    <label htmlFor="ganancia_porcentaje" className="mb-1 text-xs sm:text-sm font-medium text-gray-700 truncate text-center block">
+                        % Gan.
+                    </label>
                     <div className="relative">
                         <input
                             type="number"
@@ -76,42 +76,48 @@ const Formulario = () => {
                             name="ganancia_porcentaje"
                             value={productData.ganancia_porcentaje}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md pr-8"
+                            className="w-full px-1 sm:px-3 py-2 border border-gray-300 rounded-md pr-6"
                             min="0"
                             max="9999"
                             placeholder="0"
                             required
                         />
-                        <span className="absolute right-3 top-2">%</span>
+                        <span className="absolute right-2 top-2">%</span>
                     </div>
                 </div>
                 
-                <div className="col-span-5">
+                <div className="col-span-5 sm:col-span-5">
+                    <label htmlFor="ganancia_valor" className="mb-1 text-xs sm:text-sm font-medium text-gray-700 truncate text-center block">
+                        <span className="hidden sm:inline">Ganancia </span>Lote
+                    </label>
                     <div className="relative">
-                        <span className="absolute left-3 top-2">$</span>
+                        <span className="absolute left-2 sm:left-3 top-2">$</span>
                         <input
                             type="text"
                             id="ganancia_valor"
                             name="ganancia_valor"
                             value={productData.ganancia_valor}
                             onChange={handleChange}
-                            className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md"
+                            className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-2 border border-gray-300 rounded-md"
                             placeholder="0.00"
                             required
                         />
                     </div>
                 </div>
                 
-                <div className="col-span-4">
+                <div className="col-span-4 sm:col-span-5">
+                    <label htmlFor="ganancia_unidad" className="mb-1 text-xs sm:text-sm font-medium text-gray-700 truncate text-center block">
+                        <span className="hidden sm:inline">Ganancia </span>Unidad
+                    </label>
                     <div className="relative">
-                        <span className="absolute left-3 top-2">$</span>
+                        <span className="absolute left-2 sm:left-3 top-2">$</span>
                         <input
                             type="text"
                             id="ganancia_unidad"
                             name="ganancia_unidad"
                             value={productData.ganancia_unidad}
                             onChange={handleChange}
-                            className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md"
+                            className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-2 border border-gray-300 rounded-md"
                             placeholder="0.00"
                             required
                         />
@@ -122,22 +128,22 @@ const Formulario = () => {
     );
 
     const renderValorVenta = () => (
-        <div className="mb-4">
-            <label htmlFor="valor_venta" className="mb-1 text-sm font-medium text-gray-700">
+        <div className="mb-4 flex flex-col items-center">
+            <label htmlFor="valor_venta" className="mb-1 text-sm font-medium text-gray-700 text-center">
                 Valor de Venta por Unidad
             </label>
-            <div className="relative">
+            <div className="relative w-1/2">
                 <span className="absolute left-3 top-2">$</span>
                 <input
                     type="text"
                     id="valor_venta"
                     name="valor_venta"
                     value={productData.valor_venta}
-                    className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+                    className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-center"
                     disabled
                 />
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-1 text-center">
                 Precio final de venta por unidad incluyendo la ganancia
             </p>
         </div>

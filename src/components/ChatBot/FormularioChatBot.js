@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 const FormularioChatBot = () => {
   const [mensajes, setMensajes] = useState([]);
   const [inputMensaje, setInputMensaje] = useState('');
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const enviarMensaje = (e) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const FormularioChatBot = () => {
       </button>
 
       {/* Contenido del chat */}
-      <div className={`flex flex-col h-[100dvh] ${isCollapsed ? 'hidden' : ''}`}>
+      <div className={`flex flex-col h-full ${isCollapsed ? 'hidden' : ''}`}>
         {/* Header */}
         <div className="p-4 bg-blue-500 text-white flex justify-between items-center">
           <h3 className="font-semibold text-lg">Asistente Virtual</h3>
@@ -94,7 +94,7 @@ const FormularioChatBot = () => {
 
         {/* Formulario de entrada */}
         <form 
-          className="p-4 border-t border-gray-200 flex gap-2 bg-white" 
+          className="sticky bottom-0 p-4 border-t border-gray-200 flex gap-2 bg-white" 
           onSubmit={enviarMensaje}
         >
           <input

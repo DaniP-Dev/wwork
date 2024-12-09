@@ -15,6 +15,7 @@ const FormularioProductCard = ({ product, activeCard, onCardClick }) => {
                     flex flex-col transition-all duration-300 ease-in-out cursor-pointer
                     hover:shadow-xl hover:scale-105 hover:bg-gray-50
                     ${isExpanded ? 'h-auto' : 'h-[50vh]'}
+                    mt-20
                 `}
                 onClick={() => onCardClick(isExpanded ? null : product.id)}
             >
