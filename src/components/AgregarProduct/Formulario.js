@@ -64,11 +64,11 @@ const Formulario = () => {
 
     const renderGananciaSection = () => (
         <div className="mb-4">
+            <h3 className="text-center mb-3 text-sm font-medium text-gray-700">
+                ¿Qué ganancia le quieres obtener al producto?
+            </h3>
             <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-3">
-                    <label htmlFor="ganancia_porcentaje" className="mb-1 text-sm font-medium text-gray-700">
-                        Ganancia %
-                    </label>
                     <div className="relative">
                         <input
                             type="number"
@@ -87,9 +87,6 @@ const Formulario = () => {
                 </div>
                 
                 <div className="col-span-5">
-                    <label htmlFor="ganancia_valor" className="mb-1 text-sm font-medium text-gray-700 truncate">
-                        Ganancia Lote
-                    </label>
                     <div className="relative">
                         <span className="absolute left-3 top-2">$</span>
                         <input
@@ -106,9 +103,6 @@ const Formulario = () => {
                 </div>
                 
                 <div className="col-span-4">
-                    <label htmlFor="ganancia_unidad" className="mb-1 text-sm font-medium text-gray-700 truncate">
-                        Ganancia Unidad
-                    </label>
                     <div className="relative">
                         <span className="absolute left-3 top-2">$</span>
                         <input
