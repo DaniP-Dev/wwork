@@ -88,7 +88,7 @@ const Formulario = () => {
                 
                 <div className="col-span-5">
                     <label htmlFor="ganancia_valor" className="mb-1 text-sm font-medium text-gray-700 truncate">
-                        Ganancia Total del Lote
+                        Ganancia Lote
                     </label>
                     <div className="relative">
                         <span className="absolute left-3 top-2">$</span>
@@ -107,7 +107,7 @@ const Formulario = () => {
                 
                 <div className="col-span-4">
                     <label htmlFor="ganancia_unidad" className="mb-1 text-sm font-medium text-gray-700 truncate">
-                        Ganancia por Unidad
+                        Ganancia Unidad
                     </label>
                     <div className="relative">
                         <span className="absolute left-3 top-2">$</span>
