@@ -1,24 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { ServicioChatBot } from './Servicio';
 
 const FormularioChatBot = () => {
   const [mensajes, setMensajes] = useState([]);
   const [inputMensaje, setInputMensaje] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [estaCargando, setEstaCargando] = useState(false);
+  const [chatbot] = useState(new ServicioChatBot());
 
-  const enviarMensaje = (e) => {
+  const enviarMensaje = async (e) => {
     e.preventDefault();
-    if (inputMensaje.trim() === '') return;
-    
-    const nuevoMensaje = {
+    if (!inputMensaje.trim() || estaCargando) return;
+
+    // Agregar mensaje del usuario
+    const mensajeUsuario = {
       texto: inputMensaje,
       esUsuario: true,
       timestamp: new Date().toLocaleTimeString()
     };
-    
-    setMensajes([...mensajes, nuevoMensaje]);
+    setMensajes(prev => [...prev, mensajeUsuario]);
     setInputMensaje('');
+    setEstaCargando(true);
+
+    try {
+      // Obtener respuesta de Gemini
+      const respuesta = await chatbot.enviarMensaje(inputMensaje);
+      
+      // Agregar respuesta del bot
+      const mensajeBot = {
+        texto: respuesta,
+        esUsuario: false,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      setMensajes(prev => [...prev, mensajeBot]);
+    } catch (error) {
+      // Manejar error
+      const mensajeError = {
+        texto: "Lo siento, hubo un error al procesar tu mensaje.",
+        esUsuario: false,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      setMensajes(prev => [...prev, mensajeError]);
+    } finally {
+      setEstaCargando(false);
+    }
   };
 
   return (
@@ -103,10 +130,12 @@ const FormularioChatBot = () => {
             onChange={(e) => setInputMensaje(e.target.value)}
             placeholder="Escribe tu mensaje aquí..."
             className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
+            disabled={estaCargando}
           />
           <button 
             type="submit"
             className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"
+            disabled={estaCargando}
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
