@@ -1,44 +1,49 @@
-import { useState, useEffect } from 'react';
-import { ServicioProductCard } from './Servicio';
+import { useState, useEffect } from "react";
+import { ServicioProductCard } from "./Servicio";
 
 export const useLogicaProductCard = () => {
-    const [products, setProducts] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [showModal, setShowModal] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-    useEffect(() => {
-        const unsubscribe = ServicioProductCard.observarProductos((productsList) => {
-            setProducts(productsList);
-            
-            if (selectedProduct && !productsList.find(p => p.id === selectedProduct.id)) {
-                setSelectedProduct(null);
-                setShowModal(false);
-            }
-        });
+  useEffect(() => {
+    const unsubscribe = ServicioProductCard.observarProductos(
+      (productsList) => {
+        setProducts(productsList);
 
-        return () => unsubscribe();
-    }, [selectedProduct]);
+        if (
+          selectedProduct &&
+          !productsList.find((p) => p.id === selectedProduct.id)
+        ) {
+          setSelectedProduct(null);
+          setShowModal(false);
+        }
+      }
+    );
 
-    const handleProductClick = (product) => {
-        setSelectedProduct(product);
-    };
+    return () => unsubscribe();
+  }, [selectedProduct]);
 
-    const handleComprarClick = (e) => {
-        e.stopPropagation();
-        setShowModal(true);
-    };
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedProduct(null);
-    };
+  const handleComprarClick = (e) => {
+    e.stopPropagation();
+    setShowModal(true);
+  };
 
-    return {
-        products,
-        selectedProduct,
-        showModal,
-        handleProductClick,
-        handleComprarClick,
-        handleCloseModal
-    };
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+  };
+
+  return {
+    products,
+    selectedProduct,
+    showModal,
+    handleProductClick,
+    handleComprarClick,
+    handleCloseModal,
+  };
 };

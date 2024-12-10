@@ -1,12 +1,12 @@
-import RegisterUser from '@/components/RegistrarUsuario';
-import React from 'react';
+import RegisterUser from "@/components/RegistrarUsuario";
+import React from "react";
 
 const pageRegistroClient = () => {
-    return (
-        <>
-            <RegisterUser />
-        </>
-    );
+  return (
+    <>
+      <RegisterUser />
+    </>
+  );
 };
 
 export default pageRegistroClient;
