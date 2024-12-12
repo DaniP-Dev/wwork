@@ -16,6 +16,7 @@ const FormularioChatBot = () => {
 
   const mensajesContainerRef = useRef(null);
 
+  // Efecto para hacer scroll hacia abajo cuando hay nuevos mensajes
   useEffect(() => {
     if (mensajesContainerRef.current) {
       mensajesContainerRef.current.scrollTop =
@@ -24,7 +25,7 @@ const FormularioChatBot = () => {
   }, [mensajes]);
 
   return (
-    <div className="fixed top-16 right-0 bottom-0 transition-all duration-300 ease-in-out">
+    <div className="fixed top-16 right-0 h-[calc(100vh-4rem)] transition-all duration-300 ease-in-out">
       {isCollapsed && (
         <button
           onClick={toggleChat}
@@ -49,7 +50,7 @@ const FormularioChatBot = () => {
 
       <div
         className={`h-full ${
-          isCollapsed ? "w-0" : "w-full sm:w-[350px]"
+          isCollapsed ? "w-0" : "w-[350px]"
         } bg-white shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_25px_rgba(0,0,0,0.25)] rounded-l-lg flex flex-col overflow-hidden`}
       >
         {/* Header */}
@@ -77,7 +78,7 @@ const FormularioChatBot = () => {
         {/* Área de mensajes */}
         <div
           ref={mensajesContainerRef}
-          className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0"
+          className="flex-1 overflow-y-auto p-4 space-y-4"
         >
           {mensajes.map((mensaje, index) => (
             <div

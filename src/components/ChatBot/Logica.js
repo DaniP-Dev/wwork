@@ -32,6 +32,8 @@ export const useLogicaChatBot = () => {
 
     try {
       const response = await chatbot.enviarMensaje(input);
+      if (!response) throw new Error("Respuesta vacía del chatbot");
+      
       const mensajeBot = {
         texto: response,
         esUsuario: false,
@@ -39,8 +41,9 @@ export const useLogicaChatBot = () => {
       };
       setMensajes((prev) => [...prev, mensajeBot]);
     } catch (error) {
+      console.error("Error en el chat:", error);
       const mensajeError = {
-        texto: "Lo siento, hubo un error al procesar tu mensaje.",
+        texto: "Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo más tarde.",
         esUsuario: false,
         timestamp: new Date().toLocaleTimeString(),
       };

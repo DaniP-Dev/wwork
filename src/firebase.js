@@ -20,4 +20,9 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
+// Verificación de conexión
+if (process.env.NODE_ENV === 'development') {
+    console.log('Firebase inicializado con proyecto:', firebaseConfig.projectId);
+}
+
 export { db, auth, storage };
