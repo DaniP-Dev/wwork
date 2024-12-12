@@ -25,7 +25,7 @@ const FormularioChatBot = () => {
   }, [mensajes]);
 
   return (
-    <div className="fixed top-16 right-0 h-[calc(100vh-4rem)] transition-all duration-300 ease-in-out">
+    <div className="fixed top-16 right-0 bottom-0 transition-all duration-300 ease-in-out">
       {isCollapsed && (
         <button
           onClick={toggleChat}
@@ -49,12 +49,12 @@ const FormularioChatBot = () => {
       )}
 
       <div
-        className={`h-full ${
+        className={`h-full flex flex-col ${
           isCollapsed ? "w-0" : "w-[350px]"
-        } bg-white shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_25px_rgba(0,0,0,0.25)] rounded-l-lg flex flex-col overflow-hidden`}
+        } bg-white shadow-lg rounded-l-lg overflow-hidden`}
       >
-        {/* Header */}
-        <div className="p-4 bg-blue-500 text-white flex justify-between items-center">
+        {/* Header fijo */}
+        <div className="flex-none h-14 p-4 bg-blue-500 text-white flex justify-between items-center">
           <h3 className="font-semibold text-lg">Asistente Virtual</h3>
           <button
             onClick={toggleChat}
@@ -75,7 +75,7 @@ const FormularioChatBot = () => {
           </button>
         </div>
 
-        {/* Área de mensajes */}
+        {/* Área de mensajes con scroll */}
         <div
           ref={mensajesContainerRef}
           className="flex-1 overflow-y-auto p-4 space-y-4"
@@ -103,9 +103,9 @@ const FormularioChatBot = () => {
           ))}
         </div>
 
-        {/* Formulario de entrada */}
-        <form onSubmit={manejarEnvio} className="p-4 border-t border-gray-200">
-          <div className="flex space-x-2">
+        {/* Formulario siempre visible en la parte inferior */}
+        <div className="flex-none border-t border-gray-200 bg-white p-4">
+          <form onSubmit={manejarEnvio} className="flex space-x-2">
             <input
               type="text"
               value={input}
@@ -134,8 +134,8 @@ const FormularioChatBot = () => {
                 />
               </svg>
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
