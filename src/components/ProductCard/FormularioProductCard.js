@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import BotonComprar from "./components/BotonComprar";
+import { formatearPrecioCalculado } from '../AgregarProduct/LogicaPrecios';
 
 const FormularioProductCard = ({ product, activeCard, onCardClick }) => {
   const [showModal, setShowModal] = useState(false);
@@ -21,16 +22,20 @@ const FormularioProductCard = ({ product, activeCard, onCardClick }) => {
       >
         <figure className="w-full h-[30vh] bg-gray-200 rounded-t-lg flex items-center justify-center overflow-hidden">
           <img
-            src={product.image || "https://via.placeholder.com/150"}
+            src={product.imagenURL || "https://via.placeholder.com/150"}
             alt={product.nombre}
             className="w-full h-full object-cover rounded-t-lg"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://via.placeholder.com/150";
+            }}
           />
         </figure>
 
         <div className="p-2 flex flex-col flex-grow">
           <h2 className="text-lg font-semibold truncate">{product.nombre}</h2>
           <p className="text-blue-600 font-bold truncate">
-            ${product.valor_venta}
+            ${formatearPrecioCalculado(product.valor_venta)}
           </p>
         </div>
 
@@ -76,6 +81,8 @@ const FormularioProductCard = ({ product, activeCard, onCardClick }) => {
         <BotonComprar
           productoID={product.id}
           precioUnitario={product.valor_venta}
+          categoria={product.categoria}
+          iva={Number(product.iva)}
           onClose={() => setShowModal(false)}
         />
       )}

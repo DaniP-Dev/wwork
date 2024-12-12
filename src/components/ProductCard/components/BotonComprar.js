@@ -3,7 +3,7 @@
 import React from "react";
 import useLogicaCompra from "./BotonCompraHook";
 
-const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
+const BotonComprar = ({ productoID, precioUnitario, categoria, iva, onClose }) => {
   const {
     formData,
     isLoading,
@@ -12,7 +12,7 @@ const BotonComprar = ({ productoID, precioUnitario, onClose }) => {
     handleChange,
     handleSubmit,
     setShowPassword,
-  } = useLogicaCompra(productoID, precioUnitario, onClose);
+  } = useLogicaCompra(productoID, precioUnitario, categoria, iva, onClose);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">

@@ -13,6 +13,8 @@ export const ServicioProductCard = {
       (snapshot) => {
         const productsList = snapshot.docs.map((doc) => ({
           id: doc.id,
+          categoria: doc.data().categoria,
+          iva: doc.data().iva,
           ...doc.data(),
         }));
         callback(productsList);

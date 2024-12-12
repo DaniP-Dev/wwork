@@ -5,21 +5,50 @@ import {
   onSnapshot,
   doc,
   setDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebase";
 
 class ServicioProduct {
-  async agregarProducto(productoData) {
+  agregarProducto = async (productoData, archivo) => {
     try {
-      const productoConIva = {
+      const productId = doc(collection(db, "productos")).id;
+
+      let imagenURL = null;
+      if (archivo) {
+        imagenURL = await this.subirImagen(archivo, productId);
+      }
+
+      const productoConImagen = {
         ...productoData,
-        iva: Number(productoData.iva),
+        imagenURL: imagenURL,
+        id: productId,
       };
-      return await addDoc(collection(db, "productos"), productoConIva);
+
+      await setDoc(doc(db, "productos", productId), productoConImagen);
+
+      return productoConImagen;
     } catch (error) {
-      throw new Error("Error al agregar el producto: " + error.message);
+      console.error("Error al agregar producto:", error);
+      throw error;
     }
-  }
+  };
+
+  agregarCategoria = async (nombreCategoria) => {
+    try {
+      const categoriaRef = doc(db, "categorias", nombreCategoria);
+      await setDoc(categoriaRef, {
+        nombre: nombreCategoria,
+        creacion: new Date(),
+        ventas: 0,
+      });
+      return true;
+    } catch (error) {
+      throw new Error("Error al agregar la categoría: " + error.message);
+    }
+  };
 
   async obtenerCategorias() {
     try {
@@ -52,16 +81,19 @@ class ServicioProduct {
     });
   }
 
-  async agregarCategoria(nombreCategoria) {
+  async subirImagen(archivo, productId) {
     try {
-      const categoriaRef = doc(db, "categorias", nombreCategoria);
-      await setDoc(categoriaRef, {
-        nombre: nombreCategoria,
-        creacion: new Date(),
-      });
-      return true;
+      const nombreArchivo = `productos/${productId}-${archivo.name}`;
+      const storageRef = ref(storage, nombreArchivo);
+
+      const snapshot = await uploadBytes(storageRef, archivo);
+
+      const url = await getDownloadURL(snapshot.ref);
+
+      return url;
     } catch (error) {
-      throw new Error("Error al agregar la categoría: " + error.message);
+      console.error("Error al subir imagen:", error);
+      throw new Error("Error al subir la imagen");
     }
   }
 }

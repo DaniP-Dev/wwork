@@ -4,6 +4,7 @@ import {
   calcularGananciasYVenta,
 } from "./LogicaPrecios";
 import { validarDatosProducto, prepararDatosParaGuardar } from "./LogicaDatos";
+import { useState } from "react";
 
 export const useLogicaProduct = (servicioProduct) => {
   const {
@@ -20,6 +21,8 @@ export const useLogicaProduct = (servicioProduct) => {
     setMensajeExito,
     resetearFormulario,
   } = useEstadosFormulario(servicioProduct);
+
+  const [archivoImagen, setArchivoImagen] = useState(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -78,7 +81,7 @@ export const useLogicaProduct = (servicioProduct) => {
         productData,
         categoriaFinal
       );
-      await servicioProduct.agregarProducto(productoParaGuardar);
+      await servicioProduct.agregarProducto(productoParaGuardar, archivoImagen);
 
       resetearFormulario();
     } catch (error) {
@@ -86,6 +89,18 @@ export const useLogicaProduct = (servicioProduct) => {
       setError(error.message);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleImagenChange = async (event) => {
+    const archivo = event.target.files[0];
+    if (archivo) {
+      setArchivoImagen(archivo);
+      const urlPrevia = URL.createObjectURL(archivo);
+      setProductData((prev) => ({
+        ...prev,
+        imagenURL: urlPrevia,
+      }));
     }
   };
 
@@ -99,5 +114,6 @@ export const useLogicaProduct = (servicioProduct) => {
     mensajeExito,
     handleChange,
     handleSubmit,
+    handleImagenChange,
   };
 };

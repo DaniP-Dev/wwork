@@ -5,7 +5,7 @@ import ServicioProduct from "./ServicioProduct";
 const CAMPOS_FORMULARIO = [
   { id: "nombre", type: "text", label: "Nombre del Producto" },
   { id: "descripcion", type: "textarea", label: "Descripción" },
-  { id: "imagenURL", type: "text", label: "URL de la Imagen" },
+  { id: "imagenURL", type: "file", label: "Imagen del Producto", accept: "image/*" },
 ];
 
 const Formulario = () => {
@@ -20,10 +20,37 @@ const Formulario = () => {
     mensajeExito,
     handleChange,
     handleSubmit,
+    handleImagenChange,
   } = useLogicaProduct(servicioProduct);
 
-  const renderCampo = ({ id, type, label }) => {
+  const renderCampo = ({ id, type, label, accept }) => {
     const commonClasses = "w-full px-3 py-2 border border-gray-300 rounded-md";
+
+    if (type === "file") {
+      return (
+        <div className="flex flex-col">
+          <label htmlFor={id} className="mb-1 text-sm font-medium text-gray-700">
+            {label}
+          </label>
+          <input
+            type={type}
+            id={id}
+            name={id}
+            onChange={handleImagenChange}
+            accept={accept}
+            className={commonClasses}
+            required
+          />
+          {productData.imagenURL && (
+            <img 
+              src={productData.imagenURL} 
+              alt="Vista previa" 
+              className="mt-2 w-32 h-32 object-cover rounded"
+            />
+          )}
+        </div>
+      );
+    }
 
     return (
       <div className="flex flex-col">
